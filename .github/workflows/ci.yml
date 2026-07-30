@@ -43,3 +43,25 @@ jobs:
 
       - name: Run tests
         run: clojure -M:test
+
+      - name: Lint
+        run: clojure -M:lint
+
+  # The compressor and decompressor must produce identical bytes on a second
+  # runtime with no host zlib available — that is the portability claim, so it
+  # gets a gate rather than a paragraph in the README.
+  cljs:
+    name: nbb run-tests.cljs (ClojureScript)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install nbb
+        run: npm install -g nbb@1.4.210
+
+      - name: Run the portable suite on ClojureScript
+        run: nbb run-tests.cljs
