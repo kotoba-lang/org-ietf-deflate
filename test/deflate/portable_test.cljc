@@ -282,3 +282,49 @@
       (is (some? lens))
       (is (<= (reduce max 0 lens) tables/max-code-length))
       (is (every? pos? lens) "every symbol with a frequency gets a code"))))
+
+;; ---------------------------------------------------------------------------
+;; Cross-runtime byte determinism
+;; ---------------------------------------------------------------------------
+;;
+;; Every other test above is satisfied by ANY valid encoder: they inflate what
+;; they deflate, so a JVM tree and a ClojureScript tree both pass while
+;; disagreeing byte for byte. They did disagree — `huffman-depths` sorted its
+;; initial node list on frequency alone, and `sort-by` being stable left equal
+;; frequencies in the seq order of a HASH MAP, which is platform-specific.
+;;
+;; For every consumer this repo had (PNG, ZIP, WOFF, PDF, bonsai) that was
+;; harmless: nothing addressed the compressed bytes. `kotobase-block-codec`
+;; puts them inside a CID, where two encodings of one input are two different
+;; objects. Hence a test that fails on a difference no round-trip can see.
+
+(deftest huffman-tie-break-is-total
+  (testing "equal frequencies order by symbol, not by hash-map iteration"
+    ;; 40 symbols, all frequency 1: every comparison is a tie, so this is the
+    ;; maximally order-sensitive histogram.
+    (let [flat (vec (repeat 40 1))
+          lens (huffman/lengths-from-freqs flat tables/max-code-length)]
+      (is (= lens (huffman/lengths-from-freqs flat tables/max-code-length)))
+      (is (= [6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 5 5 5 5
+              5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5]
+             lens)
+          "pinned: a change here re-encodes every stream this repo produces"))))
+
+(deftest compressed-bytes-are-pinned
+  (testing "the exact zlib stream for a fixed input, on whichever runtime runs
+            this — the property a content address depends on"
+    (is (= [120 1 75 76 74 78 73 77 75 135 82 0 40 218 5 121]
+           (deflate/deflate (->bytes "abcdefgabcdefg") {:level 1})))
+    (is (= [120 1 237 193 49 1 0 0 0 194 160 172 246 47 97 140 61 192 0 0 0
+            128 220 1 141 138 235 236]
+           (deflate/deflate (vec (repeat 4000 97)) {:level 1})))
+    (is (= [120 1 99 100 98 102 97 5 0 0 40 0 16]
+           (deflate/deflate [1 2 3 4 5] {:level 1}))
+        "a five-byte payload, encoded identically everywhere"))
+  (testing "and a histogram full of near-equal frequencies, which is where the
+            two runtimes actually diverged — pinned by length and CRC because
+            the stream is 5 KB"
+    (let [z (deflate/deflate (:structured samples) {:level 1})]
+      (is (= 5414 (count z)))
+      (is (= 1638761810 (deflate/crc32 z)))
+      (is (= (:structured samples) (deflate/inflate z))))))

@@ -80,9 +80,24 @@
   "Exact Huffman code lengths for `freq-map` (symbol → positive frequency,
    at least two entries). Merges the two lowest-frequency nodes, deepening
    every symbol underneath, which is the textbook construction stated in terms
-   of depths instead of an explicit tree."
+   of depths instead of an explicit tree.
+
+   The initial order is `[frequency symbol]`, and the second component is
+   load-bearing rather than tidy. `sort-by` is stable, so sorting on frequency
+   alone leaves equal-frequency symbols in `freq-map`'s own seq order — and
+   `freq-map` is a hash map, whose order differs between Clojure and
+   ClojureScript. Different tie-breaks build a different (equally optimal)
+   tree, so the two runtimes emitted different, equally valid DEFLATE streams
+   for identical input.
+
+   That was invisible to every consumer here — PNG, ZIP, WOFF, PDF and bonsai
+   all care only that a stream inflates, and it does — until a caller put the
+   compressed bytes inside a content address, where a different encoding is a
+   different identity. Sorting on the symbol too makes the order total, so the
+   construction is a function of the histogram and nothing else."
   [freq-map]
-  (let [start (vec (sort-by first (map (fn [[s f]] [f [s]]) freq-map)))]
+  (let [start (vec (sort-by (juxt first (comp first second))
+                            (map (fn [[s f]] [f [s]]) freq-map)))]
     (loop [nodes start
            depths (transient (zipmap (keys freq-map) (repeat 0)))]
       (if (<= (count nodes) 1)
