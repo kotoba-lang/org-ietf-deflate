@@ -104,9 +104,9 @@ work, not a claim this repo makes today.
 ## Test
 
 ```sh
-clojure -M:test     # JVM: portable suite + conformance against java.util.zip
-nbb run-tests.cljk  # ClojureScript: the same portable suite, no host zlib
-clojure -M:lint
+kbb -M:test     # JVM: portable suite + conformance against java.util.zip
+kbb --backend sci run-tests.cljk  # ClojureScript: the same portable suite, no host zlib
+kbb -M:lint
 ```
 
 The JVM suite uses `java.util.zip` **only as an oracle**, in both directions:

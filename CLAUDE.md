@@ -28,8 +28,8 @@ and nothing here may depend back on `kasane`, `utsushi` or any consumer.
   any value that can reach the high bit is normalised through
   `deflate.checksum/u32`. If you write new bit-twiddling, add a case to the
   "unsigned 32-bit domain" test in `portable_test.cljc`.
-- **The portable suite must pass under both runtimes.** `clojure -M:test` and
-  `nbb run-tests.cljk`. Keep sizes in `portable_test.cljc` modest — nbb
+- **The portable suite must pass under both runtimes.** `kbb -M:test` and
+  `kbb --backend sci run-tests.cljk`. Keep sizes in `portable_test.cljc` modest — nbb
   interprets, so a megabyte-scale case belongs in the JVM suite instead.
 
 ## Layout
