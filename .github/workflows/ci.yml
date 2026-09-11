@@ -51,7 +51,7 @@ jobs:
   # runtime with no host zlib available — that is the portability claim, so it
   # gets a gate rather than a paragraph in the README.
   cljs:
-    name: nbb run-tests.cljs (ClojureScript)
+    name: nbb run-tests.cljk (ClojureScript)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -64,4 +64,4 @@ jobs:
         run: npm install -g nbb@1.4.210
 
       - name: Run the portable suite on ClojureScript
-        run: nbb run-tests.cljs
+        run: nbb run-tests.cljk
