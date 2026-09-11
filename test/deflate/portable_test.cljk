@@ -1,7 +1,7 @@
 (ns deflate.portable-test
   "Runtime-agnostic suite: no `java.util.zip`, no Node `zlib`, no fixtures from
-   another implementation. Runs under `clojure -M:test` and under
-   `nbb run-tests.cljk`, which is what makes the two-runtime claim in the README
+   another implementation. Runs under `kbb -M:test` and under
+   `kbb --backend sci run-tests.cljk`, which is what makes the two-runtime claim in the README
    testable rather than aspirational.
 
    Conformance *against* another implementation lives in
