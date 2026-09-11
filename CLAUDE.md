@@ -7,7 +7,7 @@ and nothing here may depend back on `kasane`, `utsushi` or any consumer.
 ## Invariants
 
 - **No host codec, ever.** `java.util.zip`, Node `zlib`, `pako`, `CompressionStream`
-  are forbidden in `src/`. They appear in `test/deflate/jvm_interop_test.clj`
+  are forbidden in `src/`. They appear in `test/deflate/jvm_interop_test.cljk`
   only, as a conformance oracle. The whole point of this repo is that a caller
   on any runtime — JVM, browser, nbb, a future `.kotoba` host — gets the same
   bytes without one.
@@ -29,7 +29,7 @@ and nothing here may depend back on `kasane`, `utsushi` or any consumer.
   `deflate.checksum/u32`. If you write new bit-twiddling, add a case to the
   "unsigned 32-bit domain" test in `portable_test.cljc`.
 - **The portable suite must pass under both runtimes.** `clojure -M:test` and
-  `nbb run-tests.cljs`. Keep sizes in `portable_test.cljc` modest — nbb
+  `nbb run-tests.cljk`. Keep sizes in `portable_test.cljc` modest — nbb
   interprets, so a megabyte-scale case belongs in the JVM suite instead.
 
 ## Layout

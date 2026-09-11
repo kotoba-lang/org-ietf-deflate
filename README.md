@@ -105,7 +105,7 @@ work, not a claim this repo makes today.
 
 ```sh
 clojure -M:test     # JVM: portable suite + conformance against java.util.zip
-nbb run-tests.cljs  # ClojureScript: the same portable suite, no host zlib
+nbb run-tests.cljk  # ClojureScript: the same portable suite, no host zlib
 clojure -M:lint
 ```
 
