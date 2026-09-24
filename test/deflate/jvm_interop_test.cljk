@@ -13,7 +13,7 @@
    Also pins the compression ratio against zlib's. The greedy+lazy matcher here
    is not zopfli; the point of the assertion is to catch a *collapse* (a bug
    that silently stops emitting matches), not to claim parity."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [deflate.core :as deflate])
   (:import [java.io ByteArrayOutputStream ByteArrayInputStream]
            [java.util.zip Deflater Inflater CRC32 Adler32 GZIPInputStream GZIPOutputStream]))
