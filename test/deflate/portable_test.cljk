@@ -15,7 +15,7 @@
             [deflate.huffman :as huffman]
             [deflate.inflate :as inflate]
             [deflate.tables :as tables]
-            #?(:clj  [clojure.test :refer [deftest is testing]]
+            #?(:clj  [kotoba.test :refer [deftest is testing]]
                :cljs [cljs.test :refer [deftest is testing]])))
 
 ;; ---------------------------------------------------------------------------
