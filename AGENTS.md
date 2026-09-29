@@ -1,4 +1,4 @@
-# CLAUDE.md — org-ietf-deflate
+# AGENTS.md — org-ietf-deflate
 
 DEFLATE (RFC 1951) + zlib (RFC 1950) + gzip (RFC 1952), both directions, in
 portable zero-dep `.cljc`. This is a **leaf**: it must never grow a dependency,
